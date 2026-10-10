@@ -1,4 +1,4 @@
- name: Build Earth KernelSU-Next
+name: Build Earth KernelSU-Next
 
 on:
   workflow_dispatch:
@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 360
-
     steps:
       - name: Checkout kernel source
         uses: actions/checkout@v4
