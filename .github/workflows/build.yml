@@ -1,46 +1,46 @@
+
 name: Build Earth KernelSU-Next
 
 on:
-workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
-contents: read
+  contents: read
 
 jobs:
-build:
-runs-on: ubuntu-22.04
-timeout-minutes: 360
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
 
-steps:
-  - name: Checkout kernel source
-    uses: actions/checkout@v4
-    with:
-      repository: mubashardev/android_kernel_xiaomi_earth_lineageos
-      ref: "3.0"
-      submodules: recursive
-      fetch-depth: 0
+    steps:
+      - name: Checkout kernel source
+        uses: actions/checkout@v4
+        with:
+          repository: mubashardev/android_kernel_xiaomi_earth_lineageos
+          ref: "3.0"
+          submodules: recursive
+          fetch-depth: 0
 
-  - name: Install dependencies
-    run: |
-      sudo apt-get update
-      sudo apt-get install -y bc bison build-essential flex git libssl-dev libelf-dev lld llvm-17 gcc-aarch64-linux-gnu python3 zip unzip rsync
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential flex git libssl-dev libelf-dev lld llvm-17 gcc-aarch64-linux-gnu python3 zip unzip rsync
 
-  - name: Select KernelSU-Next version
-    run: |
-      set -eux
-      git -C KernelSU-Next fetch origin --tags
-      git -C KernelSU-Next checkout --detach v3.4.0-legacy
+      - name: Set KernelSU-Next version
+        run: |
+          set -eux
+          sed -i 's/v3\.2\.0-legacy/v3.4.0-legacy/g' build.sh
 
-  - name: Build plain KernelSU-Next
-    run: |
-      set -eux
-      ./build.sh ksu-next
+      - name: Build plain KernelSU-Next
+        run: |
+          set -eux
+          ./build.sh ksu-next
 
-  - name: Upload ZIP
-    if: success()
-    uses: actions/upload-artifact@v4
-    with:
-      name: earth-ksu-next-v3.4.0-legacy
-      path: releases/*.zip
-      if-no-files-found: error
-      retention-days: 7
+      - name: Upload ZIP
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: earth-ksu-next-v3.4.0-legacy
+          path: releases/*.zip
+          if-no-files-found: error
+          retention-days: 7
